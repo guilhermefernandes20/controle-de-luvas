@@ -7,7 +7,7 @@ Permite registrar produção, visualizar quantidade, valor total e excluir regis
 
 ## 🔑 Login
 - Usuários permitidos: **gabriel** ou **joao**  
-- Senha: **adega123**  
+- Senha: **adega123** 
 
 ---
 
