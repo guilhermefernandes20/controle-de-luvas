@@ -5,17 +5,10 @@ Permite registrar produção, visualizar quantidade, valor total e excluir regis
 
 ---
 
-## 🔑 Login
-- Usuários permitidos: **gabriel** ou **joao**  
-- Senha: **adega123** 
-
----
-
 ## 📋 Funcionalidades
 - Registrar a produção diária de luvas P7 e P20  
 - Visualizar produção e valor total por dia  
 - Excluir registros  
-- Login simples com controle de acesso  
 
 ---
 
