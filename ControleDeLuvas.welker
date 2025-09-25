@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Controle de Produção - Welker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f4f4f9;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    input, select, button {
+      padding: 8px;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #ddd;
+    }
+    tfoot {
+      font-weight: bold;
+      background: #eee;
+    }
+    .btn-excluir {
+      background: #d9534f;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .btn-excluir:hover {
+      background: #c9302c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Controle de Produção - Welker</h1>
+
+  <form id="formRegistro">
+    <input type="date" id="data" required>
+    
+    <select id="tipoLuvas" required>
+      <option value="" disabled selected>Tipo de Luva</option>
+      <option value="P7">P7</option>
+      <option value="P20">P20</option>
+    </select>
+    
+    <input type="number" id="quantidade" placeholder="Quantidade" required>
+    <input type="number" id="valor" placeholder="Valor unitário (R$)" step="0.01" required>
+    
+    <button type="submit">Adicionar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Tipo</th>
+        <th>Quantidade</th>
+        <th>Valor Unitário (R$)</th>
+        <th>Total do Dia (R$)</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody id="registros"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="5">Total Geral</td>
+        <td id="totalGeral">0.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <script>
+    const form = document.getElementById('formRegistro');
+    const registros = document.getElementById('registros');
+    const totalGeralEl = document.getElementById('totalGeral');
+
+    // Recupera registros do localStorage ou cria array vazio
+    let registrosArray = JSON.parse(localStorage.getItem('registrosWelker')) || [];
+
+    // Função para atualizar a tabela e total
+    function atualizarTabela() {
+      registros.innerHTML = '';
+      let totalGeral = 0;
+
+      registrosArray.forEach((registro, index) => {
+        const totalDia = registro.quantidade * registro.valor;
+        totalGeral += totalDia;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${registro.data}</td>
+          <td>${registro.tipo}</td>
+          <td>${registro.quantidade}</td>
+          <td>${registro.valor.toFixed(2)}</td>
+          <td>${totalDia.toFixed(2)}</td>
+          <td><button class="btn-excluir">Excluir</button></td>
+        `;
+
+        // Evento excluir
+        row.querySelector('.btn-excluir').addEventListener('click', () => {
+          registrosArray.splice(index, 1);
+          localStorage.setItem('registrosWelker', JSON.stringify(registrosArray));
+          atualizarTabela();
+        });
+
+        registros.appendChild(row);
+      });
+
+      totalGeralEl.textContent = totalGeral.toFixed(2);
+    }
+
+    // Inicializa tabela ao carregar a página
+    atualizarTabela();
+
+    // Adiciona registro
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const data = document.getElementById('data').value;
+      const tipo = document.getElementById('tipoLuvas').value;
+      const quantidade = parseInt(document.getElementById('quantidade').value);
+      const valor = parseFloat(document.getElementById('valor').value);
+
+      registrosArray.push({ data, tipo, quantidade, valor });
+      localStorage.setItem('registrosWelker', JSON.stringify(registrosArray));
+
+      atualizarTabela();
+      form.reset();
+    });
+  </script>
+</body>
+</html>
